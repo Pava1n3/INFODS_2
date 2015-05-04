@@ -11,7 +11,7 @@ namespace ConsoleApplication1
         //4286006
         static void Main(string[] args)
         {
-            long baseExp, factor, maxLvl, playerExp, l, n;
+            long baseExp, factor, maxLvl, playerExp, l, h, m, b;
 
             string playerExpString;
             string rawData = Console.ReadLine();
@@ -20,43 +20,51 @@ namespace ConsoleApplication1
             baseExp = long.Parse(splitData[0]);
             factor = long.Parse(splitData[1]);
             maxLvl = long.Parse(splitData[2]);
-            l = baseExp;
-            //n = baseExp;
-            n = factor - 1;
-
+            b = baseExp;
 
             if(maxLvl > 10000000)
                 maxLvl = 10000000;
+
+            long[] levels = new long[maxLvl];
+
+            for (int i = 0; i < maxLvl; i++)
+            {
+                levels[i] = b;
+                b += (b + factor - 1) / factor;
+            }
 
             playerExpString = Console.ReadLine();
 
             while(!String.IsNullOrEmpty(playerExpString))
             {
-                    playerExp = long.Parse(playerExpString);
-                    
-                    long j = 0;    
+                playerExp = long.Parse(playerExpString);
 
-                    while (playerExp >= 0)
-                    {
-                        j++;
+                l = 0;
+                h = maxLvl;
 
-                        if (j == maxLvl)
-                            break;
-
-                        if (l - playerExp > 0)
-                            break;
-                        //playerExp -= n;
-
-                        //n = ((l + factor - 1) / factor);
-                        l = l + ((l + n) / factor);
-                    }
-                    
-                    Console.WriteLine(j);
-                    l = baseExp;
-                    //n = baseExp;
-
+                if (playerExp >= levels[maxLvl - 2])
+                {
+                    Console.WriteLine(maxLvl);
                     playerExpString = Console.ReadLine();
-                //The faster way would be to substract the extra (5 when going from 10 to 15) every round, so no k = baseExp is needed
+                    continue;
+                }
+
+                while(l < h)
+                {
+                    m = (l + h) / 2;
+
+                    if (playerExp <= levels[m])
+                        h = m;
+                    else
+                        l = m + 1;
+                }
+
+                if (playerExp < levels[h])
+                    Console.WriteLine(h + 1);
+                else
+                    Console.WriteLine(h + 2);
+
+                playerExpString = Console.ReadLine();
             }                       
         }
     }
